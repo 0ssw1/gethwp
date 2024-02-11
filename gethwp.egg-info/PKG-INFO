@@ -1,0 +1,11 @@
+Metadata-Version: 2.1
+Name: gethwp
+Version: 1.0.0
+Summary: Get text from HWP file
+Home-page: http://seowan.net
+Author: Suh Seungwan
+Author-email: seo@seowan.net
+License: MIT
+Requires-Python: >=3
+License-File: LICENSE
+Requires-Dist: olefile
