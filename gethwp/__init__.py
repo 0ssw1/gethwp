@@ -1,6 +1,10 @@
 from olefile import OleFileIO
 import zlib
 import struct
+import io
+import zipfile
+import xml.etree.ElementTree as ET
+
 
 def read_hwp(hwp_path):
     with OleFileIO(hwp_path) as ole:
@@ -40,3 +44,27 @@ def extract_text(data):
             text += data[cursor + 4:cursor + 4 + length].decode('utf-16') + "\n"
         cursor += 4 + length
     return text
+
+
+def read_hwpx(hwpx_file_path):
+    # 메모리 상에서 ZIP 파일 읽기
+    with open(hwpx_file_path, 'rb') as f:
+        hwpx_file_bytes = f.read()
+
+    with io.BytesIO(hwpx_file_bytes) as bytes_io:
+        with zipfile.ZipFile(bytes_io, 'r') as zip_ref:
+            text_parts = []
+            for file_info in zip_ref.infolist():
+                if file_info.filename.startswith('Contents/') and file_info.filename.endswith('.xml'):
+                    with zip_ref.open(file_info) as file:
+                        # XML 파일 읽고 파싱하기
+                        tree = ET.parse(file)
+                        root = tree.getroot()
+                        
+                        # 모든 텍스트 노드 추출
+                        for elem in root.iter():
+                            if elem.text:
+                                text_parts.append(elem.text.strip())
+    
+   
+    return '\n'.join(text_parts)
