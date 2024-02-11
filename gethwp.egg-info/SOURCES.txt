@@ -1,9 +1,0 @@
-LICENSE
-README.md
-setup.py
-gethwp/__init__.py
-gethwp.egg-info/PKG-INFO
-gethwp.egg-info/SOURCES.txt
-gethwp.egg-info/dependency_links.txt
-gethwp.egg-info/requires.txt
-gethwp.egg-info/top_level.txt
