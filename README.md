@@ -1,5 +1,9 @@
 # Description
-HWP 파일 내 텍스트를 문자열 형태로 추출해주는 파이썬 라이브러리입니다. 유메타랩(주) 대표 서승완이 개발하였으며, 무료(MIT 라이선스)로 배포됩니다. (Thank to Faith6)
+HWP 파일 내 텍스트를 문자열 형태로 추출해주는 파이썬 라이브러리입니다.
++ HWPX 파일 치환 기능 추가
+
+Developed by Suh Seungwan(Yumeta lab)
+(Thanks to Faith6)
 
 ## 사용법
 ### HWP 파일
@@ -16,3 +20,9 @@ hwp = gethwp.read_hwpx('test.hwpx')
 print(hwp)
 ```
 
+### HWPX 파일 내 텍스트 치환
+**HWPX 파일만 가능합니다.**
+```python
+import gethwp
+hwp = gethwp.change_word('test.hwpx','test_output.hwpx','Find Text','Replace Text')
+｀｀｀

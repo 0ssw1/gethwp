@@ -5,7 +5,7 @@ with open('README.md', encoding='utf-8') as f:
 
 setup(name='gethwp', # 패키지 명
 
-version='1.0.1',
+version='1.1.0',
 
 long_description= long_description,
 long_description_content_type='text/markdown',
@@ -16,7 +16,7 @@ author='Suh Seungwan',
 
 author_email='seo@seowan.net',
 
-url='http://seowan.net',
+url='https://github.com/0ssw1/gethwp',
 
 license='MIT', 
 

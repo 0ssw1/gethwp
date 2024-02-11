@@ -4,6 +4,8 @@ import struct
 import io
 import zipfile
 import xml.etree.ElementTree as ET
+import os
+
 
 
 def read_hwp(hwp_path):
@@ -11,7 +13,9 @@ def read_hwp(hwp_path):
         validate_hwp_file(ole)
         compression_flag = get_compression_flag(ole)
         section_texts = [read_section(ole, section_id, compression_flag) for section_id in get_section_ids(ole)]
+    
     return '\n'.join(section_texts).strip()
+
 
 def validate_hwp_file(ole):
     required_streams = {"FileHeader", "\x05HwpSummaryInformation"}
@@ -68,3 +72,36 @@ def read_hwpx(hwpx_file_path):
     
    
     return '\n'.join(text_parts)
+
+import zipfile
+import io
+
+def change_word(hwpx_file_path, output_path, find_text, replace_text):
+    # 원본 HWPX 파일을 읽고 메모리 상에서 처리하기
+    with open(hwpx_file_path, 'rb') as hwpx_file:
+        hwpx_bytes = hwpx_file.read()
+
+    # 수정된 내용을 저장할 메모리 스트림
+    modified_hwpx = io.BytesIO()
+
+    with zipfile.ZipFile(io.BytesIO(hwpx_bytes), 'r') as zip_ref:
+        # 새로운 HWPX 파일 생성을 위한 준비
+        with zipfile.ZipFile(modified_hwpx, 'w', zipfile.ZIP_DEFLATED) as new_zip:
+            for item in zip_ref.infolist():
+                # 'Contents/' 디렉토리에 있는 '.xml' 파일만 대상으로 함
+                if item.filename.startswith('Contents/') and item.filename.endswith('.xml'):
+                    # 파일 내용을 텍스트로 읽기
+                    with zip_ref.open(item.filename) as file:
+                        file_content = file.read().decode('utf-8')
+                        # 지정된 텍스트 교체
+                        modified_content = file_content.replace(find_text, replace_text)
+                        # 수정된 내용을 새 ZIP 파일에 추가
+                        new_zip.writestr(item.filename, modified_content.encode('utf-8'))
+                else:
+                    # XML 파일이 아니면 원본 내용 그대로 새 ZIP 파일에 복사
+                    new_zip.writestr(item.filename, zip_ref.read(item.filename))
+
+    # 수정된 내용이 담긴 새로운 HWPX 파일을 지정된 경로에 저장
+    with open(output_path, 'wb') as output_file:
+        output_file.write(modified_hwpx.getvalue())
+
